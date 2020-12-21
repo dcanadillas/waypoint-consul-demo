@@ -1,6 +1,6 @@
 # Using Waypoint to deploy applications in a zero-trust network with Consul
 
-This repo has an example of Waypoint configuration to deploy a *dumb*  micro-service example of application that uses [Consul connect annotations]() to be able to implement a *zero-trust* network configuration with [HashiCorp Consul]().  
+This repo has an example of Waypoint configuration to deploy a *dumb*  micro-service example of application that uses [Consul connect annotations]() to be able to implement a *zero-trust* network configuration with [HashiCorp Consul](https://www.consul.io/).  
 
 ## Requirements
 
@@ -13,10 +13,30 @@ This repo has an example of Waypoint configuration to deploy a *dumb*  micro-ser
 
 ## Context
 
-... WIP
+When developing services (or microservices) as part of a bigger application in a dynamic environment it is essential to rely on a [zero-trust network](https://www.hashicorp.com/resources/how-zero-trust-networking) that let us configure routing and visibility between services, based on identity. In this example, we are deploying a *Hello World* Python application with a `frontend` microservice that connects to a `backend` microservice when a specific URL path of the front end is used.
+
+The goal of this example is showing how a developer is able to define the service upstream communication at deployment level without any specific knowledge of the platform (Kubernetes in this case). Also, how operators can control service traffic security by allowing only the right service communication by a simple connection definition with Consul. And last, but not least, how managing traffic for different versions of the services deployed in a [Progressive Delivery](https://redmonk.com/jgovernor/2019/08/07/hashiconf-eu-2019-the-service-mesh-push/) scenario is defined by developers and/or operators.
+
+The simple workflow would be something similar to:
+* Define services build and deploy configuration with HashiCorp Waypoint
+  * Configure the build stage by defining a `docker` builder that builds your container based on your `Dockerfile`
+  * Define the deployment stage by specifying the use of the `kubernetes` deployer. At this stage the developer just configures the port number that the service uses, the service name, and a couple of annotations specifying that there is a service upstream to be recognized by Consul. But no Kubernetes manifest needs to be written. It is passed as a configuration description of your deployment tool, Waypoint.
+* Build and deploy your services with Waypoint execution. Execute it or automate it with your desired CI/CD pipeline engine
+* Connect and secure your services with HashiCorp Consul
+  * Operators can select the right service connection for the `Ingress` traffic
+  * Configure only the allowed connections between service identities, even with the namespace isolation if needed
+  * Define traffic splitting and resolution for your services versions
+
+
+
+By using this repository you would work on an architecture like this one:
+
+![waypoint-consul-apps](./docs/Waypoint-Consul-K8s.png)
+
+
+> NOTE: The Mesh Gateway is not part of the example, but it is configured in the Consul deployment values file in case you want to do a cluster federation for your service mesh. 
 
 ## Install Consul and Waypoint Server
-
 
 ### Install Consul
 
