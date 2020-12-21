@@ -7,8 +7,8 @@ This repo has an example of Waypoint configuration to deploy a *dumb*  micro-ser
 * A Kubernetes cluster, either your local cluster (you can use [Minikube](https://minikube.sigs.k8s.io/docs/start/), [k3s](https://k3s.io/), [kind](https://kind.sigs.k8s.io/docs/user/quick-start/#installation) or any other of your preference) or a non local cluster (GKE, EKS, AKS...)
 * [`kubectl`](https://kubernetes.io/docs/tasks/tools/install-kubectl/) installed 
 * [Helm](https://helm.sh/docs/intro/install/) binary installed
-* HashiCorp Waypoint binary installed ([download it here](https://www.waypointproject.io/downloads))
-* HashiCorp Consul binary installed ([download it here](https://www.consul.io/downloads))
+* HashiCorp Waypoint 0.2.0+ binary installed ([download it here](https://www.waypointproject.io/downloads))
+* HashiCorp Consul 1.8.6+ binary installed ([download it here](https://www.consul.io/downloads)).
 * A Linux or MacOS terminal (you should be able to use Windows with the corresponding tools, but I didn't test it)
 
 ## Context
@@ -75,8 +75,8 @@ You should be able to see the Consul agents and servers:
 ```
 $ consul members
 Node             Address          Status  Type    Build      Protocol  DC   Segment
-consul-server-0  172.17.0.5:8301  alive   server  1.8.5+ent  2         dc1  <all>
-consul-k8s       172.17.0.3:8301  alive   client  1.8.5+ent  2         dc1  <default>
+consul-server-0  172.17.0.5:8301  alive   server  1.9.1+ent  2         dc1  <all>
+consul-k8s       172.17.0.3:8301  alive   client  1.9.1+ent  2         dc1  <default>
 ```
 
 ### Install Waypoint Server
@@ -107,7 +107,7 @@ It should respond with a `... connected successfully.` message.
 
 ## Deploy the application with Waypoint
 
-Waypoint is using `waypoint.hcl` configuration file to build and deploy your example application in the namespeca `apps`. So first you need to be sure that the namespace exists or create it:
+Waypoint is using `waypoint.hcl` configuration file to build and deploy your example application in the namespace `apps`. So first you need to be sure that the namespace exists or create it:
 
 ```bash
 kubectl create ns apps
