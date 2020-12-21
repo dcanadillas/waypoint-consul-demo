@@ -112,7 +112,7 @@ Let's install Waypoint Server using the same K8s cluster as using consul.
 * Install Waypoint with the Waypoint CLI:
 
   ```bash
-  waypoint install -platform=kubernetes -nasmespace=waypoint -accept-tos
+  waypoint install -platform=kubernetes -k8s-nasmespace=waypoint -accept-tos
   ```
 
 > NOTE: Waypoint service is using by default a `LoadBalancer` service, so the installation will wait till the `External-IP` is being assigned. If deploying in **Minikube** you will need to run `minikube tunnel` in a different terminal console. In case of other local Kubernetes installations you might need some tools like [MetalLB](https://metallb.universe.tf/faq/) or similar.
@@ -191,7 +191,7 @@ Consul UI should show in `Services > ingress-gateway > Topology` (in `default` n
 
 ![ingress-gateway](./docs/ingress_gateway_topology.png)
 
-Now, you can check that that the `front` application is accessible, but not the *full path* when trying to access the backend:
+Now, you can check that `front` application is accessible, but not the *full path* when trying to access the backend:
 ```
 $ curl -X GET "http://$(minikube ip):30002"
 Hello from frontend World
