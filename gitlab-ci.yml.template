@@ -1,0 +1,51 @@
+prepare:
+  tags:
+    - dcanadillas
+    - docker
+    # - hashimac
+  stage: .pre
+  services:
+    - docker:dind
+  script:
+    # - echo "$VAULT_ADDR"
+    # - 'curl -X GET -H "X-Vault-Token: $VAULT_TOKEN" "$VAULT_ADDR/v1/waypoint/waypoint_env" | jq'
+    # - sudo apt update -yqq
+    # - sudo apt install unzip -y
+    - apt update
+    - apt install jq unzip -yqq
+    - cat $GOOGLE_APPLICATION_CREDENTIALS | docker login -u _json_key --password-stdin https://gcr.io
+    - docker container ls
+    - curl -LO "https://storage.googleapis.com/kubernetes-release/release/$(curl -s https://storage.googleapis.com/kubernetes-release/release/stable.txt)/bin/linux/amd64/kubectl"
+    - chmod u+x ./kubectl
+    - mv ./kubectl /usr/local/bin/
+    - mkdir -p $HOME/.kube
+    - 'curl -X GET -H "X-Vault-Token: $VAULT_TOKEN" "$VAULT_ADDR/v1/waypoint/kubeconfigs" | jq -r ".data.gke_waypoint" > $HOME/.kube/config'
+    - kubectl get ns
+    - kubectl apply -f namespace.yaml
+    
+waypoint:
+  tags:
+    - dcanadillas
+    - docker
+    # - hashimac
+  stage: build
+  services:
+    - docker:dind
+  variables:
+    WAYPOINT_VERSION: '0.1.5'
+    WAYPOINT_SERVER_ADDR: "$WAYPOINT_SERVER_ADDR"
+    # WAYPOINT_SERVER_TOKEN: "$WAYPOINT_SERVER_TOKEN"
+    WAYPOINT_SERVER_TLS: '1'
+    WAYPOINT_SERVER_TLS_SKIP_VERIFY: '1'
+  script:
+    - curl -s -o waypoint.zip https://releases.hashicorp.com/waypoint/0.2.0/waypoint_0.2.0_linux_amd64.zip
+    - unzip -o waypoint.zip
+    - chmod u+x ./waypoint
+    - mv ./waypoint /usr/local/bin
+    - echo $WAYPOINT_SERVER_ADDR
+    - 'export WAYPOINT_SERVER_TOKEN=$(curl -X GET -H "X-Vault-Token: $VAULT_TOKEN" "$VAULT_ADDR/v1/waypoint/waypoint_env" | jq -r ".data.WAYPOINT_SERVER_TOKEN")'
+    - waypoint version
+    - waypoint init
+    - kubectl get ns
+    - waypoint up -app back
+    - waypoint up -app front 

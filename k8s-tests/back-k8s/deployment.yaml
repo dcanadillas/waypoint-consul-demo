@@ -1,0 +1,32 @@
+# This file configures the hello-world app which serves public web traffic.
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: back
+  namespace: apps
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: hello-gke
+      tier: back
+  template:
+    metadata:
+      labels:
+        app: hello-gke
+        tier: back
+      annotations:
+        consul.hashicorp.com/connect-inject: "true"
+        consul.hashicorp.com/connect-service: "back"
+        consul.hashicorp.com/service-tags: "v1"
+        consul.hashicorp.com/connect-service-protocol: "http"
+    spec:
+      containers:
+      - name: back
+        image: gcr.io/hc-dcanadillas/bk8s-back:latest
+        ports:
+          - name: http
+            containerPort: 8080
+        env:
+          - name: PORT
+            value: "8080"

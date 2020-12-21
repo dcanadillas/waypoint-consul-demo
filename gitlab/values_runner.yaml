@@ -1,0 +1,5 @@
+gitlabUrl: http://gitlab.com
+runnerRegistrationToken: ""
+# rbac:
+#   create: true
+#   clusterWideAccess: false

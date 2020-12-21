@@ -1,0 +1,9 @@
+services:
+  gitlab-runner:
+    image: gitlab/gitlab-runner:ubuntu
+    container_name: gitlab-runner-dc
+    restart: always
+    volumes:
+      - /Users/dcanadillas/SynologyDrive/waypoint-bk8s/bk8s-demo/gitlab:/etc/gitlab-runner
+      - /var/run/docker.sock:/var/run/docker.sock
+    command: ["run", "--user=root", "--working-directory=/home/gitlab-runner"]
